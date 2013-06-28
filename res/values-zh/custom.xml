@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="history_detail_date_format">EEEE d MMM HH:mm</string>
+    
+	<string name="app_name">AA_DoorPhone</string>
+	<string name="notification_title">AA_DoorPhone</string>
+	<string name="wait_dialog_text">正在启动</string>
+	<string name="notification_registered">成功注册到 %s </string> 
+	<string name="notification_register_failure">无法注册到 %s</string>
+
+	<string name="setup_welcome">本向导将指引您登录到您的 SIP 账号.</string>
+	<string name="setup_create_account">在 linphone.org 中创建账号</string>
+	<string name="setup_login_linphone">我已经拥有 linphone.org 账号</string>
+	<string name="setup_login_generic">我已经拥有 SIP 账号</string>
+	<string name="setup_linphone_account_hint">输入您的 linphone.org 账号用户名和密码</string>
+	<string name="setup_general_account_hint">输入您的 SIP 账号用户名和密码</string>
+
+        <string name="setup_username_hint">用户名</string>
+	
+    <string name="tunnel_host"></string>
+    <string name="default_tunnel_mode_entry_value">@string/tunnel_mode_entry_value_disabled</string>
+</resources>
+ 
