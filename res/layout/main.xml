@@ -3,73 +3,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <!-- Hack to adjust perfectly on every screen the bottom of the fragment with the curved menu -->
+
     <LinearLayout
-	    android:id="@+id/mark"
+        android:id="@+id/mark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-    
-		<ImageView
-		    android:contentDescription="@string/content_description_mark"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="0.2"
-		    android:adjustViewBounds="true"
-		    android:scaleType="fitXY"
-		    android:src="@drawable/mark"
-		    android:visibility="invisible" />
-		
-		<ImageView
-		    android:contentDescription="@string/content_description_mark"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="0.2"
-		    android:adjustViewBounds="true"
-		    android:scaleType="fitXY"
-		    android:src="@drawable/mark"
-		    android:visibility="invisible" />
-		
-		<ImageView
-		    android:contentDescription="@string/content_description_mark"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="0.2"
-		    android:adjustViewBounds="true"
-		    android:scaleType="fitXY"
-		    android:src="@drawable/mark"
-		    android:visibility="invisible" />
-		
-		<ImageView
-		    android:contentDescription="@string/content_description_mark"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="0.2"
-		    android:adjustViewBounds="true"
-		    android:scaleType="fitXY"
-		    android:src="@drawable/mark"
-		    android:visibility="invisible" />
-		
-		<ImageView
-		    android:contentDescription="@string/content_description_mark"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_weight="0.2"
-		    android:adjustViewBounds="true"
-		    android:scaleType="fitXY"
-		    android:src="@drawable/mark"
-		    android:visibility="invisible" />
-        
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description_mark"
+            android:scaleType="fitXY"
+            android:src="@drawable/mark"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description_mark"
+            android:scaleType="fitXY"
+            android:src="@drawable/mark"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description_mark"
+            android:scaleType="fitXY"
+            android:src="@drawable/mark"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description_mark"
+            android:scaleType="fitXY"
+            android:src="@drawable/mark"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/content_description_mark"
+            android:scaleType="fitXY"
+            android:src="@drawable/mark"
+            android:visibility="invisible" />
     </LinearLayout>
-    
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/mark"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true" >
 
         <LinearLayout
             android:id="@+id/fragmentContainer"
@@ -84,7 +85,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout="@layout/status" />
-        
     </FrameLayout>
 
     <LinearLayout
@@ -92,12 +92,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone" >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2">
+            android:layout_weight="0.2" >
 
             <include layout="@layout/menu_history_button" />
 
@@ -114,24 +115,24 @@
         </RelativeLayout>
 
         <include layout="@layout/menu_contact_button" />
-        
+
         <ImageView
             android:id="@+id/dialer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-			android:adjustViewBounds="true"
-			android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/content_description_dialer"
+            android:scaleType="fitCenter"
             android:src="@drawable/dialer" />
-        
+
         <include layout="@layout/menu_about_chat_button" />
 
         <RelativeLayout
             android:id="@+id/completeChat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2">
+            android:layout_weight="0.2" >
 
             <include layout="@layout/menu_chat_button" />
 
@@ -145,13 +146,11 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:visibility="gone" />
-            
         </RelativeLayout>
 
         <include layout="@layout/menu_settings_button" />
-        
+
         <include layout="@layout/menu_about_settings_button" />
-        
     </LinearLayout>
 
 </RelativeLayout>
