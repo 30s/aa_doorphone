@@ -28,6 +28,7 @@ import org.linphone.ui.EraseButton;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -187,6 +188,17 @@ public class DialerFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		if (mVideoView != null) {
+			((GLSurfaceView) mVideoView).onResume();
+		}
+		
+		if (androidVideoWindowImpl != null) {
+			synchronized (androidVideoWindowImpl) {
+				LinphoneManager.getLc().setVideoWindow(androidVideoWindowImpl);
+			}
+		}
+
 		if (LinphoneActivity.isInstanciated()) {
 			LinphoneActivity.instance().selectMenu(FragmentsAvailable.DIALER);
 			LinphoneActivity.instance().updateDialerFragment(this);
@@ -248,5 +260,33 @@ public class DialerFragment extends Fragment {
 	
 			LinphoneManager.getInstance().newOutgoingCall(mAddress);
 		}
+	}
+	
+	@Override
+	public void onPause() {
+		if (androidVideoWindowImpl != null) {
+			synchronized (androidVideoWindowImpl) {
+				/*
+				 * this call will destroy native opengl renderer which is used by
+				 * androidVideoWindowImpl
+				 */
+				LinphoneManager.getLc().setVideoWindow(null);
+			}
+		}
+		
+		if (mVideoView != null) {
+			((GLSurfaceView) mVideoView).onPause();
+		}
+		super.onPause();
+	}
+	
+	@Override
+	public void onDestroy() {
+		if (androidVideoWindowImpl != null) { 
+			// Prevent linphone from crashing if correspondent hang up while you are rotating
+			androidVideoWindowImpl.release();
+			androidVideoWindowImpl = null;
+		}
+		super.onDestroy();
 	}
 }
