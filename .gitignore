@@ -11,3 +11,6 @@ tests/build.xml
 res/.DS_Store
 bc-android.keystore
 res/raw/lpconfig.xsd
+*~
+.settings
+proguard-project.txt
