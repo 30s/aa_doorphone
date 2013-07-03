@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 import org.linphone.core.LinphoneCore;
 import org.linphone.mediastream.Log;
+import org.linphone.mediastream.video.AndroidVideoWindowImpl;
 import org.linphone.ui.AddressAware;
 import org.linphone.ui.AddressText;
 import org.linphone.ui.CallButton;
@@ -30,6 +31,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -48,12 +51,47 @@ public class DialerFragment extends Fragment {
 	private ImageView mAddContact;
 	private OnClickListener addContactListener, cancelListener, transferListener;
 	private boolean shouldEmptyAddressField = true;
+	private SurfaceView mVideoView;
+	private SurfaceView mCaptureView;
+	private AndroidVideoWindowImpl androidVideoWindowImpl;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, 
         Bundle savedInstanceState) {
 		instance = this;
         View view = inflater.inflate(R.layout.dialer, container, false);
+		
+		mVideoView = (SurfaceView) view.findViewById(R.id.videoSurface);
+		mCaptureView = (SurfaceView) view.findViewById(R.id.videoCaptureSurface);
+		mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // Warning useless because value is ignored and automatically set by new APIs.
+		
+		fixZOrder(mVideoView, mCaptureView);
+
+		androidVideoWindowImpl = new AndroidVideoWindowImpl(mVideoView, mCaptureView);
+		androidVideoWindowImpl.setListener(new AndroidVideoWindowImpl.VideoWindowListener() {
+			public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl vw, SurfaceView surface) {
+				LinphoneManager.getLc().setVideoWindow(vw);
+				mVideoView = surface;
+			}
+
+			public void onVideoRenderingSurfaceDestroyed(AndroidVideoWindowImpl vw) {
+				LinphoneCore lc = LinphoneManager.getLc(); 
+				if (lc != null) {
+					lc.setVideoWindow(null);
+				}
+			}
+
+			public void onVideoPreviewSurfaceReady(AndroidVideoWindowImpl vw, SurfaceView surface) {
+				mCaptureView = surface;
+				LinphoneManager.getLc().setPreviewWindow(mCaptureView);
+			}
+
+			public void onVideoPreviewSurfaceDestroyed(AndroidVideoWindowImpl vw) {
+				// Remove references kept in jni code and restart camera
+				LinphoneManager.getLc().setPreviewWindow(null);
+			}
+		});
+		androidVideoWindowImpl.init();
 		
 		mAddress = (AddressText) view.findViewById(R.id.Adress); 
 		mAddress.setDialerFragment(this);
@@ -124,6 +162,12 @@ public class DialerFragment extends Fragment {
 		
 		return view;
     }
+	
+	private void fixZOrder(SurfaceView video, SurfaceView preview) {
+		video.setZOrderOnTop(false);
+		preview.setZOrderOnTop(true);
+		preview.setZOrderMediaOverlay(true); // Needed to be able to display control layout over
+	}
 
 	/**
 	 * @return null if not ready yet
