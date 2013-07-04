@@ -35,15 +35,17 @@
             android:layout_height="80dp"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
-            android:background="@drawable/dialer_address_background"
             android:focusable="true"
-            android:focusableInTouchMode="true" >
+            android:focusableInTouchMode="true"
+            android:visibility="gone" >
 
             <!-- focusable/focusableInTouchMode are set to true to prevent the keyboard to be displayed automatically -->
 
-            <org.linphone.ui.AddressText
+
+            <!--
+                 <org.linphone.ui.AddressText
                 android:id="@+id/Adress"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/Erase"
                 android:background="@color/transparent"
@@ -54,6 +56,7 @@
                 android:paddingRight="20dp"
                 android:textColor="@android:color/white"
                 android:textSize="30dp" />
+            -->
 
             <org.linphone.ui.EraseButton
                 android:id="@id/Erase"
@@ -72,12 +75,31 @@
             android:layout_height="fill_parent"
             android:layout_below="@id/addressbar" >
 
-            <org.linphone.ui.Numpad
-                android:id="@+id/Dialer"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/background_alt" />
+                android:orientation="vertical" >
+
+                <org.linphone.ui.AddressText
+                    android:id="@+id/Adress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.4"
+                    android:background="@drawable/dialer_address_background"
+                    android:hint="@string/addressHint"
+                    android:inputType="textEmailAddress"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:textColor="@android:color/white" />
+
+                <org.linphone.ui.Numpad
+                    android:id="@+id/Dialer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_alt" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
