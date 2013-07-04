@@ -63,7 +63,8 @@
                 android:layout_centerVertical="true"
                 android:adjustViewBounds="true"
                 android:paddingRight="10dp"
-                android:src="@drawable/backspace" />
+                android:src="@drawable/backspace"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout

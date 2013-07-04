@@ -38,11 +38,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * @author Sylvain Berfini
  */
-public class DialerFragment extends Fragment {
+public class DialerFragment extends Fragment implements OnClickListener {
 	private static DialerFragment instance;
 	private static boolean isCallTransferOngoing = false;
 	
@@ -111,6 +112,8 @@ public class DialerFragment extends Fragment {
 		} else {
 			mCall.setImageResource(R.drawable.call);
 		}
+		
+		view.findViewById(R.id.DigitStar).setOnClickListener(this);
 		
 		AddressAware numpad = (AddressAware) view.findViewById(R.id.Dialer);
 		if (numpad != null) {
@@ -288,5 +291,16 @@ public class DialerFragment extends Fragment {
 			androidVideoWindowImpl = null;
 		}
 		super.onDestroy();
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.DigitStar:
+			mAddress.setText("");
+			break;
+		default:
+			break;
+		}
 	}
 }
