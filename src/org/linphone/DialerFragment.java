@@ -114,6 +114,7 @@ public class DialerFragment extends Fragment implements OnClickListener {
 		}
 		
 		view.findViewById(R.id.DigitStar).setOnClickListener(this);
+		view.findViewById(R.id.DigitHash).setOnClickListener(this);
 		
 		AddressAware numpad = (AddressAware) view.findViewById(R.id.Dialer);
 		if (numpad != null) {
@@ -298,6 +299,9 @@ public class DialerFragment extends Fragment implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.DigitStar:
 			mAddress.setText("");
+			break;
+		case R.id.DigitHash:
+			mCall.performClick();
 			break;
 		default:
 			break;
