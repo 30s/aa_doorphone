@@ -1,22 +1,23 @@
 package org.linphone;
+
 /*
-DialerFragment.java
-Copyright (C) 2012  Belledonne Communications, Grenoble, France
+ DialerFragment.java
+ Copyright (C) 2012  Belledonne Communications, Grenoble, France
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 import org.linphone.core.LinphoneCore;
 import org.linphone.mediastream.Log;
 import org.linphone.mediastream.video.AndroidVideoWindowImpl;
@@ -38,7 +39,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * @author Sylvain Berfini
@@ -46,64 +46,78 @@ import android.widget.Toast;
 public class DialerFragment extends Fragment implements OnClickListener {
 	private static DialerFragment instance;
 	private static boolean isCallTransferOngoing = false;
-	
+
 	public boolean mVisible;
 	private AddressText mAddress;
 	private CallButton mCall;
 	private ImageView mAddContact;
-	private OnClickListener addContactListener, cancelListener, transferListener;
+	private OnClickListener addContactListener, cancelListener,
+			transferListener;
 	private boolean shouldEmptyAddressField = true;
 	private SurfaceView mVideoView;
 	private SurfaceView mCaptureView;
 	private AndroidVideoWindowImpl androidVideoWindowImpl;
-	
+
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
-        Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		instance = this;
-        View view = inflater.inflate(R.layout.dialer, container, false);
-		
+		View view = inflater.inflate(R.layout.dialer, container, false);
+
 		mVideoView = (SurfaceView) view.findViewById(R.id.videoSurface);
-		mCaptureView = (SurfaceView) view.findViewById(R.id.videoCaptureSurface);
-		mCaptureView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // Warning useless because value is ignored and automatically set by new APIs.
-		
+		mCaptureView = (SurfaceView) view
+				.findViewById(R.id.videoCaptureSurface);
+		mCaptureView.getHolder().setType(
+				SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS); // Warning useless
+															// because value is
+															// ignored and
+															// automatically set
+															// by new APIs.
+
 		fixZOrder(mVideoView, mCaptureView);
 
-		androidVideoWindowImpl = new AndroidVideoWindowImpl(mVideoView, mCaptureView);
-		androidVideoWindowImpl.setListener(new AndroidVideoWindowImpl.VideoWindowListener() {
-			public void onVideoRenderingSurfaceReady(AndroidVideoWindowImpl vw, SurfaceView surface) {
-				LinphoneManager.getLc().setVideoWindow(vw);
-				mVideoView = surface;
-			}
+		androidVideoWindowImpl = new AndroidVideoWindowImpl(mVideoView,
+				mCaptureView);
+		androidVideoWindowImpl
+				.setListener(new AndroidVideoWindowImpl.VideoWindowListener() {
+					public void onVideoRenderingSurfaceReady(
+							AndroidVideoWindowImpl vw, SurfaceView surface) {
+						LinphoneManager.getLc().setVideoWindow(vw);
+						mVideoView = surface;
+					}
 
-			public void onVideoRenderingSurfaceDestroyed(AndroidVideoWindowImpl vw) {
-				LinphoneCore lc = LinphoneManager.getLc(); 
-				if (lc != null) {
-					lc.setVideoWindow(null);
-				}
-			}
+					public void onVideoRenderingSurfaceDestroyed(
+							AndroidVideoWindowImpl vw) {
+						LinphoneCore lc = LinphoneManager.getLc();
+						if (lc != null) {
+							lc.setVideoWindow(null);
+						}
+					}
 
-			public void onVideoPreviewSurfaceReady(AndroidVideoWindowImpl vw, SurfaceView surface) {
-				mCaptureView = surface;
-				LinphoneManager.getLc().setPreviewWindow(mCaptureView);
-			}
+					public void onVideoPreviewSurfaceReady(
+							AndroidVideoWindowImpl vw, SurfaceView surface) {
+						mCaptureView = surface;
+						LinphoneManager.getLc().setPreviewWindow(mCaptureView);
+					}
 
-			public void onVideoPreviewSurfaceDestroyed(AndroidVideoWindowImpl vw) {
-				// Remove references kept in jni code and restart camera
-				LinphoneManager.getLc().setPreviewWindow(null);
-			}
-		});
+					public void onVideoPreviewSurfaceDestroyed(
+							AndroidVideoWindowImpl vw) {
+						// Remove references kept in jni code and restart camera
+						LinphoneManager.getLc().setPreviewWindow(null);
+					}
+				});
 		androidVideoWindowImpl.init();
-		
-		mAddress = (AddressText) view.findViewById(R.id.Adress); 
+
+		mAddress = (AddressText) view.findViewById(R.id.Adress);
 		mAddress.setDialerFragment(this);
-		
+
 		EraseButton erase = (EraseButton) view.findViewById(R.id.Erase);
 		erase.setAddressWidget(mAddress);
-		
+
 		mCall = (CallButton) view.findViewById(R.id.Call);
 		mCall.setAddressWidget(mAddress);
-		if (LinphoneActivity.isInstanciated() && LinphoneManager.getLc().getCallsNb() > 0) {
+		if (LinphoneActivity.isInstanciated()
+				&& LinphoneManager.getLc().getCallsNb() > 0) {
 			if (isCallTransferOngoing) {
 				mCall.setImageResource(R.drawable.transfer_call);
 			} else {
@@ -112,27 +126,29 @@ public class DialerFragment extends Fragment implements OnClickListener {
 		} else {
 			mCall.setImageResource(R.drawable.call);
 		}
-		
+
 		view.findViewById(R.id.DigitStar).setOnClickListener(this);
 		view.findViewById(R.id.DigitHash).setOnClickListener(this);
-		
+
 		AddressAware numpad = (AddressAware) view.findViewById(R.id.Dialer);
 		if (numpad != null) {
 			numpad.setAddressWidget(mAddress);
 		}
-		
+
 		mAddContact = (ImageView) view.findViewById(R.id.addContact);
-		
+
 		addContactListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				LinphoneActivity.instance().displayContactsForEdition(mAddress.getText().toString());
+				LinphoneActivity.instance().displayContactsForEdition(
+						mAddress.getText().toString());
 			}
 		};
 		cancelListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				LinphoneActivity.instance().resetClassicMenuLayoutAndGoBackToCallIfStillRunning();
+				LinphoneActivity.instance()
+						.resetClassicMenuLayoutAndGoBackToCallIfStillRunning();
 			}
 		};
 		transferListener = new OnClickListener() {
@@ -142,15 +158,19 @@ public class DialerFragment extends Fragment implements OnClickListener {
 				if (lc.getCurrentCall() == null) {
 					return;
 				}
-				lc.transferCall(lc.getCurrentCall(), mAddress.getText().toString());
+				lc.transferCall(lc.getCurrentCall(), mAddress.getText()
+						.toString());
 				isCallTransferOngoing = false;
-				LinphoneActivity.instance().resetClassicMenuLayoutAndGoBackToCallIfStillRunning();
+				LinphoneActivity.instance()
+						.resetClassicMenuLayoutAndGoBackToCallIfStillRunning();
 			}
 		};
-		
-		mAddContact.setEnabled(!(LinphoneActivity.isInstanciated() && LinphoneManager.getLc().getCallsNb() > 0));
+
+		mAddContact
+				.setEnabled(!(LinphoneActivity.isInstanciated() && LinphoneManager
+						.getLc().getCallsNb() > 0));
 		resetLayout(isCallTransferOngoing);
-		
+
 		if (getArguments() != null) {
 			shouldEmptyAddressField = false;
 			String number = getArguments().getString("SipUri");
@@ -164,23 +184,24 @@ public class DialerFragment extends Fragment implements OnClickListener {
 				mAddress.setPictureUri(Uri.parse(photo));
 			}
 		}
-		
+
 		return view;
-    }
-	
+	}
+
 	private void fixZOrder(SurfaceView video, SurfaceView preview) {
 		video.setZOrderOnTop(false);
 		preview.setZOrderOnTop(true);
-		preview.setZOrderMediaOverlay(true); // Needed to be able to display control layout over
+		preview.setZOrderMediaOverlay(true); // Needed to be able to display
+												// control layout over
 	}
 
 	/**
 	 * @return null if not ready yet
 	 */
-	public static DialerFragment instance() { 
+	public static DialerFragment instance() {
 		return instance;
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -188,15 +209,15 @@ public class DialerFragment extends Fragment implements OnClickListener {
 			LinphoneActivity.instance().updateDialerFragment(this);
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 		if (mVideoView != null) {
 			((GLSurfaceView) mVideoView).onResume();
 		}
-		
+
 		if (androidVideoWindowImpl != null) {
 			synchronized (androidVideoWindowImpl) {
 				LinphoneManager.getLc().setVideoWindow(androidVideoWindowImpl);
@@ -207,7 +228,7 @@ public class DialerFragment extends Fragment implements OnClickListener {
 			LinphoneActivity.instance().selectMenu(FragmentsAvailable.DIALER);
 			LinphoneActivity.instance().updateDialerFragment(this);
 		}
-		
+
 		if (shouldEmptyAddressField) {
 			mAddress.setText("");
 		} else {
@@ -215,14 +236,14 @@ public class DialerFragment extends Fragment implements OnClickListener {
 		}
 		resetLayout(isCallTransferOngoing);
 	}
-	
+
 	public void resetLayout(boolean callTransfer) {
 		isCallTransferOngoing = callTransfer;
 		LinphoneCore lc = LinphoneManager.getLcIfManagerNotDestroyedOrNull();
 		if (lc == null) {
 			return;
 		}
-		
+
 		if (lc.getCallsNb() > 0) {
 			if (isCallTransferOngoing) {
 				mCall.setImageResource(R.drawable.transfer_call);
@@ -242,11 +263,12 @@ public class DialerFragment extends Fragment implements OnClickListener {
 			enableDisableAddContact();
 		}
 	}
-	
+
 	public void enableDisableAddContact() {
-		mAddContact.setEnabled(LinphoneManager.getLc().getCallsNb() > 0 || !mAddress.getText().toString().equals(""));	
+		mAddContact.setEnabled(LinphoneManager.getLc().getCallsNb() > 0
+				|| !mAddress.getText().toString().equals(""));
 	}
-	
+
 	public void newOutgoingCall(Intent intent) {
 		if (intent != null && intent.getData() != null) {
 			String scheme = intent.getData().getScheme();
@@ -255,39 +277,40 @@ public class DialerFragment extends Fragment implements OnClickListener {
 			} else if (scheme.startsWith("call") || scheme.startsWith("sip")) {
 				mAddress.setText(intent.getData().getSchemeSpecificPart());
 			} else {
-				Log.e("Unknown scheme: ",scheme);
+				Log.e("Unknown scheme: ", scheme);
 				mAddress.setText(intent.getData().getSchemeSpecificPart());
 			}
-	
+
 			mAddress.clearDisplayedName();
 			intent.setData(null);
-	
+
 			LinphoneManager.getInstance().newOutgoingCall(mAddress);
 		}
 	}
-	
+
 	@Override
 	public void onPause() {
 		if (androidVideoWindowImpl != null) {
 			synchronized (androidVideoWindowImpl) {
 				/*
-				 * this call will destroy native opengl renderer which is used by
-				 * androidVideoWindowImpl
+				 * this call will destroy native opengl renderer which is used
+				 * by androidVideoWindowImpl
 				 */
 				LinphoneManager.getLc().setVideoWindow(null);
 			}
 		}
-		
+
 		if (mVideoView != null) {
 			((GLSurfaceView) mVideoView).onPause();
 		}
 		super.onPause();
 	}
-	
+
 	@Override
 	public void onDestroy() {
-		if (androidVideoWindowImpl != null) { 
-			// Prevent linphone from crashing if correspondent hang up while you are rotating
+		if (androidVideoWindowImpl != null) {
+			// Prevent linphone from crashing if correspondent hang up while you
+			// are rotating
 			androidVideoWindowImpl.release();
 			androidVideoWindowImpl = null;
 		}
@@ -301,7 +324,11 @@ public class DialerFragment extends Fragment implements OnClickListener {
 			mAddress.setText("");
 			break;
 		case R.id.DigitHash:
-			mCall.performClick();
+			if (mAddress.getText().toString().equals("9999")) {
+				((LinphoneActivity)getActivity()).showSettings();
+			} else {
+				mCall.performClick();
+			}
 			break;
 		default:
 			break;
